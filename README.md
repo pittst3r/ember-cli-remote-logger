@@ -1,5 +1,7 @@
 # Ember-remote-logger
 
+[![Build Status](https://travis-ci.org/sweatypitts/ember-cli-remote-logger.svg?branch=master)](https://travis-ci.org/sweatypitts/ember-cli-remote-logger)
+
 This README outlines the details of collaborating on this Ember addon.
 
 ## Installation
