@@ -1,1 +1,1 @@
-export { default, initialize } from 'ember-remote-logger/initializers/remote-logger-service';
+export { default, initialize } from 'ember-cli-remote-logger/initializers/remote-logger-service';
