@@ -1,5 +1,5 @@
 {
-  "name": "ember-remote-logger",
+  "name": "ember-cli-remote-logger",
   "version": "0.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
@@ -40,10 +40,12 @@
     "loader.js": "^4.0.0"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "logger"
   ],
   "dependencies": {
-    "ember-cli-babel": "^5.1.5"
+    "ember-cli-babel": "^5.1.5",
+    "ember-network": "sweatypitts/ember-network#993df5c4f632e6a33063d1d3e2883fab72388520"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

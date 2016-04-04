@@ -2,5 +2,8 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-remote-logger'
+  name: 'ember-cli-remote-logger',
+  isDevelopingAddon: function() {
+    return true;
+  }
 };
