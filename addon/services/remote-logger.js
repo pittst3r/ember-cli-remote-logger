@@ -1,4 +1,4 @@
-import Ember, { get } from 'ember';
+import Ember from 'ember';
 import fetch from "ember-network/fetch";
 
 export default Ember.Service.extend({
