@@ -36,12 +36,12 @@ export default Ember.Service.extend({
 
   _url: Ember.computed(function() {
     const adapter = this.get('_adapter');
-    
+
     return [adapter.get('host'), adapter.get('namespace'), 'log'].join('/');
   }),
 
   _formatEntry(entry, tags = []) {
-    return tags.map(function(t) {
+    return tags.map((t) => {
       return ['[', t, ']'].join('');
     }).concat(entry).join(' ');
   },
