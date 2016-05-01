@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-remote-logger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Gives your ember-cli app remote logging capabilities",
   "repository": {
     "type": "git",
