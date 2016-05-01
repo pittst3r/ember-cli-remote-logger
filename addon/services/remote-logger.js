@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import fetch from "ember-network/fetch";
+import fetch from 'ember-network/fetch';
 
 export default Ember.Service.extend({
   url: Ember.computed.alias('_url'),
@@ -36,6 +36,7 @@ export default Ember.Service.extend({
 
   _url: Ember.computed(function() {
     const adapter = this.get('_adapter');
+    
     return [adapter.get('host'), adapter.get('namespace'), 'log'].join('/');
   }),
 
