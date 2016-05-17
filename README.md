@@ -17,7 +17,8 @@ This addon will look up your application adapter and use it to build a request
 to send the log entries with. Your adapter's host, namespace, and headers are
 included in the request. In addition to your adapter's headers a `Content-Type`
 of `text/plain` is added and the body of the request is, accordingly,
-plain text. The request is sent using `ember-network/fetch`, so it's FastBoot compatible.
+plain text. The request is sent using `ember-network/fetch`, so it's FastBoot
+compatible.
 
 So, for example, if your adapter's host is `https://www.example.com` and your
 namespace is `api/v1` then log entries will be sent via `POST` to
@@ -43,6 +44,26 @@ This results in a log entry that looks like this:
 [DEBUG][OPTIONAL][TAGS] Sweet log entry
 ```
 
-There are three more log levels in addition to `debug`: `info`, `warn`, and `error`.
+There are three more log levels in addition to `debug`: `info`, `warn`, and
+`error`.
 
-The log methods return a promise and resolve/reject according to whether an ok response was received from the server or not. I'm not sure that I would recommend waiting for log requests to resolve from a UX point of view, but it's there in case you need it.
+The log methods return a promise and resolve/reject according to whether an ok
+response was received from the server or not. I'm not sure that I would
+recommend waiting for log requests to resolve from a UX point of view, but it's
+there in case you need it.
+
+## FastBoot
+
+`fetch` requires a full URL, including the protocol. This means you need to
+either define the
+[`url`](http://emberjs.com/api/data/classes/DS.RESTAdapter.html#property_host)
+property on your application adapter or override the `url` property on the
+`remote-logger` service:
+
+```js
+import RemoteLogger from 'ember-cli-remote-logger/services/remote-logger';
+
+export default RemoteLogger.extend({
+  url: 'https://www.example.com/sweet/url'
+});
+```
