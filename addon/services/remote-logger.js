@@ -89,8 +89,6 @@ export default Ember.Service.extend({
       } else {
         return Ember.RSVP.reject(r);
       }
-    }, (r) => {
-      return Ember.RSVP.reject(r);
     });
   },
 
