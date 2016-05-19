@@ -35,21 +35,6 @@ export default Ember.Service.extend({
     let namespace = this.get('namespace') || '';
     let path = this.get('path');
 
-    function constructUrl(start, parts) {
-      if (parts.length === 0) { return start; }
-
-      let newPart = parts.shift();
-      let newStart;
-
-      if (newPart.length === 0) {
-        newStart = start;
-      } else {
-        newStart = start + '/' + newPart;
-      }
-
-      return constructUrl(newStart, parts);
-    }
-
     return constructUrl(host, [namespace, path]);
   }),
 
@@ -96,3 +81,18 @@ export default Ember.Service.extend({
     return fetch(url, options);
   }
 });
+
+function constructUrl(start, parts) {
+  if (parts.length === 0) { return start; }
+
+  let newPart = parts.shift();
+  let newStart;
+
+  if (newPart.length === 0) {
+    newStart = start;
+  } else {
+    newStart = start + '/' + newPart;
+  }
+
+  return constructUrl(newStart, parts);
+}
