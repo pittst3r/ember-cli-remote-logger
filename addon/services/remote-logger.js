@@ -28,14 +28,29 @@ export default Ember.Service.extend({
 
   namespace: Ember.computed.alias('adapter.namespace'),
 
-  path: 'log',
+  pathPrefix: 'log',
 
-  url: Ember.computed('host', 'namespace', 'path', function() {
+  url: Ember.computed('host', 'namespace', 'pathPrefix', function() {
     let host = this.get('host') || '';
     let namespace = this.get('namespace') || '';
-    let path = this.get('path');
+    let prefix = this.get('pathPrefix');
 
-    return constructUrl(host, [namespace, path]);
+    return constructUrl(host, [namespace, prefix]);
+  }),
+
+  useDifferentEndpoints: false,
+
+  urls: Ember.computed('host', 'namespace', 'pathPrefix', function() {
+    let host = this.get('host') || '';
+    let namespace = this.get('namespace') || '';
+    let prefix = this.get('pathPrefix');
+
+    return {
+      debug: constructUrl(host, [namespace, prefix, 'debug']),
+      info: constructUrl(host, [namespace, prefix, 'info']),
+      warn: constructUrl(host, [namespace, prefix, 'warn']),
+      error: constructUrl(host, [namespace, prefix, 'error']),
+    };
   }),
 
   _push(level, entry, tags = []) {
@@ -45,7 +60,7 @@ export default Ember.Service.extend({
 
     Ember.get(Ember.Logger, level).call(this, formattedEntry);
 
-    return this._sendRequest(formattedEntry);
+    return this._sendRequest(level, formattedEntry);
   },
 
   _formatEntry(entry, tags = []) {
@@ -54,9 +69,13 @@ export default Ember.Service.extend({
     }).concat(entry).join(' ');
   },
 
-  _sendRequest(entry) {
-    let url = this.get('url');
+  _sendRequest(level, entry) {
+    let url = this.get('url');;
     let headers = this.get('headers');
+
+    if (this.get('useDifferentEndpoints')) {
+      url = this.get('urls')[level];
+    }
 
     if (headers) {
       headers['Content-Type'] = 'text/plain';
