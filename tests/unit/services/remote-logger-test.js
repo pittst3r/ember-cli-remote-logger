@@ -107,7 +107,7 @@ test('it concats given tags, keeping log level tag first', function(assert) {
   let service = this.subject();
 
   service.reopen({
-    _sendRequest(_, entry) {
+    _sendRequest(_opts, _level, entry) {
       assert.equal(entry, '[DEBUG] [COOL_TAG] [AND_ANOTHER_1] Cool log entry');
     }
   });
@@ -121,7 +121,7 @@ test('it sends log entry tagged with log level', function(assert) {
   let service = this.subject();
 
   service.reopen({
-    _sendRequest(_, entry) {
+    _sendRequest(_opts, _level, entry) {
       assert.equal(entry, '[DEBUG] Cool log entry');
     }
   });
@@ -129,7 +129,7 @@ test('it sends log entry tagged with log level', function(assert) {
   service.debug('Cool log entry');
 
   service.reopen({
-    _sendRequest(_, entry) {
+    _sendRequest(_opts, _level, entry) {
       assert.equal(entry, '[INFO] Cool log entry');
     }
   });
@@ -137,7 +137,7 @@ test('it sends log entry tagged with log level', function(assert) {
   service.info('Cool log entry');
 
   service.reopen({
-    _sendRequest(_, entry) {
+    _sendRequest(_opts, _level, entry) {
       assert.equal(entry, '[WARN] Cool log entry');
     }
   });
@@ -145,44 +145,12 @@ test('it sends log entry tagged with log level', function(assert) {
   service.warn('Cool log entry');
 
   service.reopen({
-    _sendRequest(_, entry) {
+    _sendRequest(_opts, _level, entry) {
       assert.equal(entry, '[ERROR] Cool log entry');
     }
   });
 
   service.error('Cool log entry');
-});
-
-test('it sends the log entry to the `url`', function(assert) {
-  assert.expect(1);
-
-  let service = this.subject();
-
-  service.reopen({
-    _fetch(url) {
-      assert.equal(url, service.get('url'));
-      return Ember.RSVP.resolve({ ok: true });
-    }
-  });
-
-  return service.debug('Cool log entry');
-});
-
-test('it sends the log entries to the `urls` if opted-in', function(assert) {
-  assert.expect(1);
-
-  let service = this.subject();
-
-  service.set('useDifferentEndpoints', true);
-
-  service.reopen({
-    _fetch(url) {
-      assert.equal(url, service.get('urls.debug'));
-      return Ember.RSVP.resolve({ ok: true });
-    }
-  });
-
-  return service.debug('Cool log entry');
 });
 
 test('it rejects if response is not ok', function(assert) {
@@ -191,8 +159,8 @@ test('it rejects if response is not ok', function(assert) {
   let service = this.subject();
 
   service.reopen({
-    _fetch() {
-      return Ember.RSVP.resolve({ ok: false });
+    _sendRequest() {
+      return Ember.RSVP.reject({ ok: false });
     }
   });
 

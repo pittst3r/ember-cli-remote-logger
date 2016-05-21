@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import fetch from 'ember-network/fetch';
+import LogRequest from 'ember-cli-remote-logger/utils/log-request';
 
 export default Ember.Service.extend({
   debug(entry, tags = []) {
@@ -53,14 +54,25 @@ export default Ember.Service.extend({
     };
   }),
 
+  _requestOptions: Ember.computed('url', 'urls', 'headers',
+  'useDifferentEndpoints', function() {
+    return {
+      url: this.get('url'),
+      urls: this.get('urls'),
+      headers: this.get('headers'),
+      useDifferentEndpoints: this.get('useDifferentEndpoints')
+    };
+  }),
+
   _push(level, entry, tags = []) {
     tags.unshift(level.toUpperCase());
 
-    const formattedEntry = this._formatEntry(entry, tags);
+    let formattedEntry = this._formatEntry(entry, tags);
 
     Ember.get(Ember.Logger, level).call(this, formattedEntry);
 
-    return this._sendRequest(level, formattedEntry);
+    return this._sendRequest(
+      this.get('_requestOptions'), level, formattedEntry);
   },
 
   _formatEntry(entry, tags = []) {
@@ -69,35 +81,9 @@ export default Ember.Service.extend({
     }).concat(entry).join(' ');
   },
 
-  _sendRequest(level, entry) {
-    let url = this.get('url');;
-    let headers = this.get('headers');
-
-    if (this.get('useDifferentEndpoints')) {
-      url = this.get('urls')[level];
-    }
-
-    if (headers) {
-      headers['Content-Type'] = 'text/plain';
-    }
-
-    const fetchOptions = {
-      method: 'POST',
-      headers: headers,
-      body: entry
-    };
-
-    return this._fetch(url, fetchOptions).then((r) => {
-      if (r.ok) {
-        return Ember.RSVP.resolve(r);
-      } else {
-        return Ember.RSVP.reject(r);
-      }
-    });
-  },
-
-  _fetch(url, options) {
-    return fetch(url, options);
+  _sendRequest(options, level, entry) {
+    let req = new LogRequest(options);
+    return req.send(level, entry);
   }
 });
 
